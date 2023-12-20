@@ -1,5 +1,7 @@
 package com.base.shoppinglist.presentation
 
+import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,11 +38,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import com.base.shoppinglist.userinterfaceutils.CustomBasicTextField
 import com.base.shoppinglist.userinterfaceutils.TitleBold
 import com.base.shoppinglist.userinterfaceutils.TitleMedium
 import com.base.shoppinglist.userinterfaceutils.TitleSmall
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
 
 data class ShoppingItem(
     val id: Int,
@@ -232,47 +240,56 @@ fun ShoppingItemEditor(item: ShoppingItem, onEditComplete: (String, Double) -> U
 }
 
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun ShoppingListItem(
     item: ShoppingItem,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .fillMaxWidth()
-            .border(
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                shape = RoundedCornerShape(20)
-            ), horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = item.name, modifier = Modifier.padding(8.dp))
-        Text(text = "Qty: ${item.quantity}", modifier = Modifier.padding(8.dp))
-
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()) {
+       val sdf = SimpleDateFormat("dd-MM-yyyy")
+        val currentTime = sdf.format(Date())
+        TitleSmall(text = currentTime.toString())
         Row(
             modifier = Modifier
-                .padding(8.dp),
+                .padding(vertical = 8.dp)
+                .fillMaxWidth()
+                .border(
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(20)
+                ), horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onEditClick) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+            Text(text = item.name, modifier = Modifier.padding(8.dp))
+            Text(text = "Qty: ${item.quantity}", modifier = Modifier.padding(8.dp))
 
-            IconButton(onClick = onDeleteClick) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+            Row(
+                modifier = Modifier
+                    .padding(8.dp),
+            ) {
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
 
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+            }
         }
     }
+
 }
 
 

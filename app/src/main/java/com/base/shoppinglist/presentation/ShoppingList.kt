@@ -24,6 +24,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.base.shoppinglist.userinterfaceutils.CustomBasicTextField
 import com.base.shoppinglist.userinterfaceutils.TitleBold
 import com.base.shoppinglist.userinterfaceutils.TitleMedium
 import com.base.shoppinglist.userinterfaceutils.TitleSmall
@@ -43,7 +45,7 @@ import com.base.shoppinglist.userinterfaceutils.TitleSmall
 data class ShoppingItem(
     val id: Int,
     var name: String,
-    var quantity: Int,
+    var quantity: Double,
     var isEditing: Boolean = false
 )
 
@@ -125,7 +127,7 @@ fun ShoppingListApp() {
                                     val newItem = ShoppingItem(
                                         id = sItems.size + 1,
                                         name = itemName,
-                                        quantity = itemQuantity.toInt()
+                                        quantity = itemQuantity.toDouble()
                                     )
                                     sItems = sItems + newItem
                                     showDialog = false
@@ -177,45 +179,52 @@ fun ShoppingListApp() {
 
 
 @Composable
-fun ShoppingItemEditor(item: ShoppingItem, onEditComplete: (String, Int) -> Unit) {
+fun ShoppingItemEditor(item: ShoppingItem, onEditComplete: (String, Double) -> Unit) {
     var editedName by remember { mutableStateOf(item.name) }
     var editedQuantity by remember { mutableStateOf(item.quantity.toString()) }
     var isEditing by remember { mutableStateOf(item.isEditing) }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    )
-    {
-        Column {
-            BasicTextField(
-                value = "Name: $editedName",
-                onValueChange = { editedName = it },
-                singleLine = true,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(8.dp)
-            )
-            BasicTextField(
-                value = "Qty: $editedQuantity",
-                onValueChange = { editedQuantity = it },
-                singleLine = true,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(8.dp)
-            )
-        }
 
-        Button(
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()) {
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+                TitleSmall(text = "Item Name: ")
+                BasicTextField(
+                    value = editedName,
+                    onValueChange = { newText -> editedName = newText },
+                    singleLine = true,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(8.dp)
+                )
+            }
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+                TitleSmall(text = "Item Quantity: ")
+                BasicTextField(
+                    value = editedQuantity,
+                    onValueChange = { newText -> editedQuantity = newText },
+                    singleLine = true,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(8.dp)
+                )
+            }
+
+
+        Button(modifier = Modifier.align(Alignment.CenterHorizontally),
             onClick = {
                 isEditing = false
-                onEditComplete(editedName, editedQuantity.toIntOrNull() ?: 1)
+                onEditComplete(editedName, editedQuantity.toDoubleOrNull() ?: 1.0)
             }
         ) {
-            Text("Save")
+            TitleSmall(text = "Save", Color.White)
         }
     }
 
@@ -231,10 +240,10 @@ fun ShoppingListItem(
 ) {
     Row(
         modifier = Modifier
-            .padding( vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .fillMaxWidth()
             .border(
-                border = BorderStroke(2.dp, Color(0XFF018786)),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(20)
             ), horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -247,11 +256,19 @@ fun ShoppingListItem(
                 .padding(8.dp),
         ) {
             IconButton(onClick = onEditClick) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = null, tint = Color(0XFF018786))
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
 
             IconButton(onClick = onDeleteClick) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = Color(0XFF018786))
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
 
         }

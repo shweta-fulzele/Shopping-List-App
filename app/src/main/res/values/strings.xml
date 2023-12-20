@@ -1,12 +1,4 @@
 <resources>
-    <string name="app_name">UnitConverter</string>
-    <string name="unit_converter">Unit Converter</string>
-    <string name="enter_value">Enter the Value</string>
-    <string name="result">Result</string>
-    <string name="centimeter">Centimeter</string>
-    <string name="meter">Meter</string>
-    <string name="millimeter">Millimeter</string>
-    <string name="feet">Feet</string>
-    <string name="inch">Inch</string>
-    <string name="select">Select</string>
+    <string name="app_name">My Shopping List</string>
+
 </resources>
